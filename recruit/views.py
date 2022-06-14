@@ -35,3 +35,29 @@ class RecruitView(View):
         }for job in jobs]
 
         return JsonResponse(result, status=200, safe=False)
+
+class RecruitModifyView(View):
+    def put(self, request, job_id):
+        try:
+            job = Recruit.objects.get(id=job_id)
+            data = json.loads(request.body)
+            job.position_id = data['position_id']
+            job.compensation = data['compensation']
+            job.content = data['content']
+            job.stack_id = data['stack_id']
+
+            job.save()
+
+            return JsonResponse({"message" : "SUCCESS"}, status=200)
+
+        except Recruit.DoesNotExist:
+            return JsonResponse({"message" : "DOES_NOT_EXIST"}, status=404)
+
+
+    def delete(self, request, job_id):
+        try:
+            Recruit.objects.get(id=job_id).delete()
+            return JsonResponse({"message" : "DELETE_SUCCESS"}, status=200)
+
+        except Recruit.DoesNotExist:
+            return JsonResponse({"message" : "DOES_NOT_EXIST"}, status=404)
