@@ -21,3 +21,17 @@ class RecruitView(View):
 
         except KeyError :
             return JsonResponse({"message" : "KEY_ERROR"}, status=400)
+
+    def get(self, request):
+        jobs = Recruit.objects.all()
+        result = [{
+            'id' : job.id,
+            'company' : job.company.name,
+            'country' : job.company.location.country.name,
+            'state' : job.company.location.state.name,
+            'position' : job.position.name,
+            'compensation' : job.compensation,
+            'stack' : job.stack.name
+        }for job in jobs]
+
+        return JsonResponse(result, status=200, safe=False)
