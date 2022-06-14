@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.views import View
+from django.db.models import Q
 
 from .models import Recruit
 
@@ -58,6 +59,28 @@ class RecruitModifyView(View):
         try:
             Recruit.objects.get(id=job_id).delete()
             return JsonResponse({"message" : "DELETE_SUCCESS"}, status=200)
+
+        except Recruit.DoesNotExist:
+            return JsonResponse({"message" : "DOES_NOT_EXIST"}, status=404)
+
+
+class JobSearchView(View):
+    def get(self, request):
+        try:
+            query = request.GET.get('query')
+
+            results = Recruit.objects.filter(Q(company_id__name__icontains = query) | Q(stack_id__name__icontains = query))
+            result = [{
+                'id' : result.id,
+                'company' : result.company.name,
+                'country' : result.company.location.country.name,
+                'state' : result.company.location.state.name,
+                'position' : result.position.name,
+                'compensation' : result.compensation,
+                'stack' : result.stack.name
+            }for result in results]
+
+            return JsonResponse(result, safe=False, stauts=200)
 
         except Recruit.DoesNotExist:
             return JsonResponse({"message" : "DOES_NOT_EXIST"}, status=404)
