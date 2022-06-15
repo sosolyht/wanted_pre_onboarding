@@ -80,7 +80,7 @@ class JobSearchView(View):
                 'stack' : result.stack.name
             }for result in results]
 
-            return JsonResponse(result, safe=False, stauts=200)
+            return JsonResponse(result, safe=False, status=200)
 
         except Recruit.DoesNotExist:
             return JsonResponse({"message" : "DOES_NOT_EXIST"}, status=404)
