@@ -84,3 +84,21 @@ class JobSearchView(View):
 
         except Recruit.DoesNotExist:
             return JsonResponse({"message" : "DOES_NOT_EXIST"}, status=404)
+
+class RecruitDetailView(View):
+    def get(self, request, job_id):
+
+        datas = Recruit.objects.filter(id=job_id)
+        result = [{
+            'id' : data.id,
+            'company' : data.company.name,
+            'country' : data.company.location.country.name,
+            'state' : data.company.location.state.name,
+            'position' : data.position.name,
+            'compensation' : data.compensation,
+            'stack' : data.stack.name,
+            'content' : data.content,
+            'similar' : [similar.id for similar in Recruit.objects.all()][:5]
+        }for data in datas]
+
+        return JsonResponse(result, safe=False, status=200)
