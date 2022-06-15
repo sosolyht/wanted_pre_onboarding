@@ -56,7 +56,7 @@ class RecruitDetailView(View):
         }for data in datas]
 
         return JsonResponse(result, safe=False, status=200)
-        
+
 
 class RecruitModifyView(View):
     def put(self, request, job_id):
@@ -90,7 +90,7 @@ class JobSearchView(View):
         try:
             query = request.GET.get('query')
 
-            results = Recruit.objects.filter(Q(company_id__name__icontains = query) | Q(stack_id__name__icontains = query))
+            results = Recruit.objects.filter(Q(company_id__name__iexact = query) | Q(stack_id__name__iexact = query))
             result = [{
                 'id'           : result.id,
                 'company'      : result.company.name,
