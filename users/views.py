@@ -5,12 +5,11 @@ from users.models import ApplyDetail
 
 import json
 
-# Create your views here.
 class ApplyJobView(View):
     def post(self, request):
-        data              = json.loads(request.body)
+        data = json.loads(request.body)
         user, created = ApplyDetail.objects.get_or_create(
-            user_id = data['user_id'],
+            user_id    = data['user_id'],
             recruit_id = data['recruit_id']
         )
 
